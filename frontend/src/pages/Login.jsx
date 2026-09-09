@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function Login() {
@@ -35,7 +35,7 @@ function Login() {
     } catch (err) {
       setError(
         err.response?.data?.detail ||
-        "Login failed. Please check your email and password."
+          "Login failed. Please check your email and password."
       );
     } finally {
       setLoading(false);
@@ -43,47 +43,71 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <p>Login to your MediPredict AI account.</p>
+    <div className="auth-page">
+      <div className="auth-card">
 
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email</label>
-          <br />
+        <div className="auth-header">
+          <div className="auth-icon">✚</div>
 
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <h1>Welcome Back</h1>
+
+          <p>
+            Login to your MediPredict AI account
+          </p>
         </div>
 
-        <br />
+        <form className="auth-form" onSubmit={handleLogin}>
 
-        <div>
-          <label>Password</label>
-          <br />
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
 
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+            <input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="auth-error">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="auth-submit-btn"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            Don't have an account?{" "}
+            <Link to="/signup">Create an account</Link>
+          </p>
         </div>
 
-        <br />
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-
-      {error && <p>{error}</p>}
+      </div>
     </div>
   );
 }

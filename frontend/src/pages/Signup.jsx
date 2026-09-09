@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function Signup() {
@@ -11,12 +11,14 @@ function Signup() {
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
 
     setMessage("");
     setError("");
+    setLoading(true);
 
     try {
       const response = await api.post("/signup", {
@@ -37,63 +39,96 @@ function Signup() {
         err.response?.data?.detail ||
           "Signup failed. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h1>Create Account</h1>
-      <p>Sign up for MediPredict AI.</p>
+    <div className="auth-page">
+      <div className="auth-card">
 
-      <form onSubmit={handleSignup}>
-        <div>
-          <label>Full Name</label>
-          <br />
-          <input
-            type="text"
-            placeholder="Enter your full name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-          />
+        <div className="auth-header">
+          <div className="auth-icon">✚</div>
+
+          <h1>Create Account</h1>
+
+          <p>
+            Create your MediPredict AI account
+          </p>
         </div>
 
-        <br />
+        <form className="auth-form" onSubmit={handleSignup}>
 
-        <div>
-          <label>Email</label>
-          <br />
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="fullName">Full Name</label>
+
+            <input
+              id="fullName"
+              type="text"
+              placeholder="Enter your full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="signupEmail">Email Address</label>
+
+            <input
+              id="signupEmail"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="signupPassword">Password</label>
+
+            <input
+              id="signupPassword"
+              type="password"
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {message && (
+            <div className="auth-success">
+              {message}
+            </div>
+          )}
+
+          {error && (
+            <div className="auth-error">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="auth-submit-btn"
+            disabled={loading}
+          >
+            {loading ? "Creating Account..." : "Create Account"}
+          </button>
+
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            Already have an account?{" "}
+            <Link to="/login">Login here</Link>
+          </p>
         </div>
 
-        <br />
-
-        <div>
-          <label>Password</label>
-          <br />
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <br />
-
-        <button type="submit">Create Account</button>
-      </form>
-
-      {message && <p>{message}</p>}
-
-      {error && <p>{error}</p>}
+      </div>
     </div>
   );
 }
